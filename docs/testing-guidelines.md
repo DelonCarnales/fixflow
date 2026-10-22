@@ -3,38 +3,45 @@
 ## Frontend service tests
 Run from the `frontend` folder with `npm test`. This uses Node's built-in test runner, so there is no install step.
 
-- The service returns the seeded orders.
+- The mock service returns seeded orders.
 - Creating an order gives it a new order number and initial history.
+- Editing an order updates its fields and only adds a history entry when its status changes.
 - Changing status updates the order and appends a history entry.
-- Negative spare-part quantity is rejected.
+- Negative spare-part quantity and price are rejected.
 - Adding a spare part creates a new ID.
 
-## Browser checks for the frontend prototype
-The following flows were checked in Chromium against the current frontend source:
-- Dashboard summary and recent orders appear.
-- Search finds the matching device.
-- Status filter only shows matching orders.
-- Empty new-order form shows validation errors.
-- Valid order can be created and opens its details.
-- Changing order status updates the current status and history.
-- Spare part can be added.
-- Customer lookup displays the correct status.
-- Unknown order number shows a clear message.
+## Full browser test
+The Playwright test at `frontend/tests/browser_smoke.py` opens the app in normal mode, which calls the backend.
+
+- Dashboard and recent orders load from the API.
+- Search and status filters work.
+- Required form fields show validation errors.
+- A new order can be created and edited.
+- The edited order remains visible after a browser refresh.
+- A status change is shown with history.
+- Spare parts can be added and renamed without changing their IDs.
+- Customer lookup handles a known and an unknown order number.
+- The browser console has no errors.
 - The page has no page-level horizontal overflow at a phone-sized viewport.
 
-The browser in the development container blocks direct navigation to local files and local URLs, so these UI flows were tested using an inline test bundle made from the same application source. The normal app itself is served with the command in the README.
+The GitHub Actions workflow starts FastAPI with a fresh SQLite file and runs the browser test against it. See the linked Actions run for the actual result.
 
-## Backend tests (planned)
-- Creating an order returns the created order.
-- Missing required fields return a validation error.
-- Unknown order IDs return 404.
-- Invalid statuses are rejected.
-- Negative cost and stock values are rejected.
-- Updating an order changes its saved values.
-- Data remains after restarting the app once SQLite is implemented.
+## Backend tests
+The Pytest tests use a temporary SQLite database. They cover:
+- Health endpoint and listing orders
+- Creating orders and status history
+- Rejecting blank required fields and negative costs
+- Editing an order and recording status changes
+- Returning 404 for unknown IDs
+- Creating and updating spare parts
+- Rejecting negative stock
+- Excluding private notes and phone from the customer lookup response
+- Combining order search and status filters
+- Reading saved order data in a later request
+- Required OpenAPI paths and schemas
 
 ## Bug reporting
-For a bug found while using the running app, create a GitHub issue with:
+For a bug found while manually using the running app, create a GitHub issue with:
 - Label: `user-test-bug`
 - Goal
 - Description
