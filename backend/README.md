@@ -1,6 +1,6 @@
 # Backend
 
-The first backend version uses a small in-memory store so the API can be tested before adding the database.
+The backend uses FastAPI and SQLAlchemy. By default, data is saved in a local SQLite file called `fixflow.db`. Sample records are added the first time the app starts.
 
 ## Run locally
 From the `backend` folder:
@@ -10,7 +10,10 @@ python -m pip install -r requirements.txt
 python -m uvicorn main:app --reload --port 8000
 ```
 
-Open http://127.0.0.1:8000/docs for the automatic API page.
+Open http://127.0.0.1:8000/docs for the API page.
+
+## Database
+The default database URL is `sqlite:///./fixflow.db`. You can set `DATABASE_URL` before starting the server to use a different SQLAlchemy-supported database, as long as its driver is installed.
 
 ## Tests
 From the `backend` folder:
@@ -19,5 +22,4 @@ From the `backend` folder:
 python -m pytest -q
 ```
 
-## Current limitation
-This version resets sample data when the server restarts. The next backend step will replace the lists with SQLite using SQLAlchemy.
+The API tests use a temporary SQLite database so test data does not change the local demo database.
