@@ -16,6 +16,7 @@ on:
       - "backend/**"
       - "openapi.yaml"
       - ".github/workflows/frontend-tests.yml"
+      - ".devcontainer/**"
 
 jobs:
   test-frontend:
