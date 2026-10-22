@@ -74,4 +74,4 @@ GitHub Actions runs the syntax checks, unit tests, browser smoke tests, and back
 7. Run the complete app and test the main flows.
 
 ## Current status
-The planning docs, frontend with mockService, OpenAPI contract, and in-memory FastAPI endpoints are in place. The frontend browser smoke tests and backend API tests pass in GitHub Actions. The next step is replacing the in-memory backend store with SQLite; the frontend is still using sample data and is not connected to the backend yet.
+The planning docs, frontend with mockService, OpenAPI contract, and FastAPI backend with SQLite/SQLAlchemy are in place. The frontend browser smoke tests and backend API tests pass in GitHub Actions. The frontend is still using sample data and is not connected to the backend yet; integration is the next step.
