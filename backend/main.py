@@ -2,9 +2,14 @@ from datetime import date, datetime
 from enum import Enum
 from typing import Optional
 
-from fastapi import FastAPI, HTTPException, Query, status
+from fastapi import Depends, FastAPI, HTTPException, Query, status
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, field_validator
+from sqlalchemy import or_
+from sqlalchemy.orm import Session
+
+from database import Base, SessionLocal, engine, get_db
+from models import Customer, Device, RepairOrder as RepairOrderRow, SparePart as SparePartRow, StatusHistory
 
 
 class RepairStatus(str, Enum):
@@ -64,8 +69,11 @@ class SparePartInput(BaseModel):
         return value.strip()
 
 
-class SparePart(SparePartInput):
+class SparePart(BaseModel):
     id: str
+    name: str
+    stock: int
+    unitPrice: float
 
 
 class PublicOrderStatus(BaseModel):
@@ -110,19 +118,63 @@ def starter_parts() -> list[dict]:
     ]
 
 
-orders = starter_orders()
-parts = starter_parts()
+def seed_data(db: Session) -> None:
+    if db.query(RepairOrderRow).count() > 0:
+        return
+    for item in starter_orders():
+        customer = Customer(name=item["customerName"], phone=item["phone"])
+        device = Device(customer=customer, device_type=item["deviceType"], model=item["deviceModel"])
+        order = RepairOrderRow(
+            id=item["id"], customer=customer, device=device, problem=item["problem"],
+            received_date=date.fromisoformat(item["receivedDate"]), status=item["status"],
+            technician=item["technician"], estimated_cost=item["estimatedCost"], notes=item["notes"],
+        )
+        db.add(order)
+        for entry in item["history"]:
+            order.history.append(StatusHistory(status=entry["status"], changed_at=entry["date"]))
+    for item in starter_parts():
+        db.add(SparePartRow(id=item["id"], name=item["name"], stock=item["stock"], unit_price=item["unitPrice"]))
+    db.commit()
 
 
-def reset_data() -> None:
-    global orders, parts
-    orders = starter_orders()
-    parts = starter_parts()
+def order_to_dict(order: RepairOrderRow) -> dict:
+    return {
+        "id": order.id,
+        "customerName": order.customer.name,
+        "phone": order.customer.phone,
+        "deviceType": order.device.device_type,
+        "deviceModel": order.device.model,
+        "problem": order.problem,
+        "receivedDate": order.received_date.isoformat(),
+        "status": order.status,
+        "technician": order.technician,
+        "estimatedCost": order.estimated_cost,
+        "notes": order.notes,
+        "history": [{"status": item.status, "date": item.changed_at} for item in order.history],
+    }
 
 
-def next_number(items: list[dict], prefix: str, start: int = 0) -> int:
-    values = [int(item["id"].replace(prefix, "")) for item in items if item["id"].startswith(prefix)]
-    return max([start, *values]) + 1
+def part_to_dict(part: SparePartRow) -> dict:
+    return {"id": part.id, "name": part.name, "stock": part.stock, "unitPrice": part.unit_price}
+
+
+def next_order_id(db: Session) -> str:
+    ids = [row[0] for row in db.query(RepairOrderRow.id).all()]
+    numbers = [int(value.replace("FF-", "")) for value in ids if value.startswith("FF-")]
+    return f"FF-{max([1000, *numbers]) + 1}"
+
+
+def next_part_id(db: Session) -> str:
+    ids = [row[0] for row in db.query(SparePartRow.id).all()]
+    numbers = [int(value.replace("PT-", "")) for value in ids if value.startswith("PT-")]
+    return f"PT-{max([0, *numbers]) + 1:02d}"
+
+
+def find_order(db: Session, order_id: str) -> RepairOrderRow:
+    order = db.get(RepairOrderRow, order_id)
+    if order is None:
+        raise HTTPException(status_code=404, detail="Repair order not found")
+    return order
 
 
 app = FastAPI(title="FixFlow API", version="1.0.0", description="A simple repair shop API.")
@@ -135,93 +187,126 @@ app.add_middleware(
 )
 
 
+@app.on_event("startup")
+def startup() -> None:
+    Base.metadata.create_all(bind=engine)
+    db = SessionLocal()
+    try:
+        seed_data(db)
+    finally:
+        db.close()
+
+
 @app.get("/health")
 def health() -> dict:
     return {"status": "ok"}
 
 
 @app.get("/orders", response_model=list[RepairOrder])
-def list_repair_orders(search: str = Query(default=""), status_filter: Optional[RepairStatus] = Query(default=None, alias="status")) -> list[dict]:
-    term = search.strip().lower()
-    result = orders
+def list_repair_orders(search: str = Query(default=""), status_filter: Optional[RepairStatus] = Query(default=None, alias="status"), db: Session = Depends(get_db)) -> list[dict]:
+    query = db.query(RepairOrderRow).join(Customer).join(Device)
+    term = search.strip()
     if term:
-        result = [order for order in result if term in order["id"].lower() or term in order["customerName"].lower() or term in order["deviceModel"].lower()]
+        like = f"%{term}%"
+        query = query.filter(or_(RepairOrderRow.id.ilike(like), Customer.name.ilike(like), Device.model.ilike(like)))
     if status_filter:
-        result = [order for order in result if order["status"] == status_filter.value]
-    return result
+        query = query.filter(RepairOrderRow.status == status_filter.value)
+    result = query.order_by(RepairOrderRow.received_date.desc(), RepairOrderRow.id.asc()).all()
+    return [order_to_dict(order) for order in result]
 
 
 @app.post("/orders", response_model=RepairOrder, status_code=status.HTTP_201_CREATED)
-def create_repair_order(payload: RepairOrderInput) -> dict:
+def create_repair_order(payload: RepairOrderInput, db: Session = Depends(get_db)) -> dict:
     data = payload.model_dump(mode="json")
-    data["id"] = f"FF-{next_number(orders, 'FF-', 1000)}"
-    data["history"] = [{"status": data["status"], "date": now_text()}]
-    orders.insert(0, data)
-    return data
+    customer = Customer(name=data["customerName"], phone=data["phone"])
+    device = Device(customer=customer, device_type=data["deviceType"], model=data["deviceModel"])
+    order = RepairOrderRow(
+        id=next_order_id(db), customer=customer, device=device, problem=data["problem"],
+        received_date=date.fromisoformat(data["receivedDate"]), status=data["status"],
+        technician=data["technician"], estimated_cost=data["estimatedCost"], notes=data["notes"],
+    )
+    order.history.append(StatusHistory(status=data["status"], changed_at=now_text()))
+    db.add(order)
+    db.commit()
+    db.refresh(order)
+    return order_to_dict(order)
 
 
 @app.get("/orders/{order_id}", response_model=RepairOrder)
-def get_repair_order(order_id: str) -> dict:
-    order = next((item for item in orders if item["id"] == order_id), None)
-    if order is None:
-        raise HTTPException(status_code=404, detail="Repair order not found")
-    return order
+def get_repair_order(order_id: str, db: Session = Depends(get_db)) -> dict:
+    return order_to_dict(find_order(db, order_id))
 
 
 @app.patch("/orders/{order_id}", response_model=RepairOrder)
-def edit_repair_order(order_id: str, payload: RepairOrderInput) -> dict:
-    order = next((item for item in orders if item["id"] == order_id), None)
-    if order is None:
-        raise HTTPException(status_code=404, detail="Repair order not found")
+def edit_repair_order(order_id: str, payload: RepairOrderInput, db: Session = Depends(get_db)) -> dict:
+    order = find_order(db, order_id)
     data = payload.model_dump(mode="json")
-    old_status = order["status"]
-    order.update(data)
-    if old_status != order["status"]:
-        order["history"].append({"status": order["status"], "date": now_text()})
-    return order
+    old_status = order.status
+    order.customer.name = data["customerName"]
+    order.customer.phone = data["phone"]
+    order.device.device_type = data["deviceType"]
+    order.device.model = data["deviceModel"]
+    order.problem = data["problem"]
+    order.received_date = date.fromisoformat(data["receivedDate"])
+    order.status = data["status"]
+    order.technician = data["technician"]
+    order.estimated_cost = data["estimatedCost"]
+    order.notes = data["notes"]
+    if old_status != order.status:
+        order.history.append(StatusHistory(status=order.status, changed_at=now_text()))
+    db.commit()
+    db.refresh(order)
+    return order_to_dict(order)
 
 
 @app.patch("/orders/{order_id}/status", response_model=RepairOrder)
-def change_repair_status(order_id: str, payload: StatusChange) -> dict:
-    order = next((item for item in orders if item["id"] == order_id), None)
-    if order is None:
-        raise HTTPException(status_code=404, detail="Repair order not found")
-    order["status"] = payload.status.value
-    order["history"].append({"status": payload.status.value, "date": now_text()})
-    return order
+def change_repair_status(order_id: str, payload: StatusChange, db: Session = Depends(get_db)) -> dict:
+    order = find_order(db, order_id)
+    order.status = payload.status.value
+    order.history.append(StatusHistory(status=order.status, changed_at=now_text()))
+    db.commit()
+    db.refresh(order)
+    return order_to_dict(order)
 
 
 @app.get("/parts", response_model=list[SparePart])
-def list_spare_parts() -> list[dict]:
-    return parts
+def list_spare_parts(db: Session = Depends(get_db)) -> list[dict]:
+    return [part_to_dict(part) for part in db.query(SparePartRow).order_by(SparePartRow.id).all()]
 
 
 @app.post("/parts", response_model=SparePart, status_code=status.HTTP_201_CREATED)
-def create_spare_part(payload: SparePartInput) -> dict:
+def create_spare_part(payload: SparePartInput, db: Session = Depends(get_db)) -> dict:
     data = payload.model_dump()
-    data["id"] = f"PT-{next_number(parts, 'PT-'):02d}"
-    parts.append(data)
-    return data
+    part = SparePartRow(id=next_part_id(db), name=data["name"], stock=data["stock"], unit_price=data["unitPrice"])
+    db.add(part)
+    db.commit()
+    db.refresh(part)
+    return part_to_dict(part)
 
 
 @app.patch("/parts/{part_id}", response_model=SparePart)
-def edit_spare_part(part_id: str, payload: SparePartInput) -> dict:
-    part = next((item for item in parts if item["id"] == part_id), None)
+def edit_spare_part(part_id: str, payload: SparePartInput, db: Session = Depends(get_db)) -> dict:
+    part = db.get(SparePartRow, part_id)
     if part is None:
         raise HTTPException(status_code=404, detail="Spare part not found")
-    part.update(payload.model_dump())
-    return part
+    data = payload.model_dump()
+    part.name = data["name"]
+    part.stock = data["stock"]
+    part.unit_price = data["unitPrice"]
+    db.commit()
+    db.refresh(part)
+    return part_to_dict(part)
 
 
 @app.get("/public/orders/{order_id}", response_model=PublicOrderStatus)
-def get_public_order_status(order_id: str) -> dict:
-    order = next((item for item in orders if item["id"].lower() == order_id.lower()), None)
+def get_public_order_status(order_id: str, db: Session = Depends(get_db)) -> dict:
+    order = db.get(RepairOrderRow, order_id.upper())
     if order is None:
         raise HTTPException(status_code=404, detail="Repair order not found")
     return {
-        "id": order["id"],
-        "deviceModel": order["deviceModel"],
-        "receivedDate": order["receivedDate"],
-        "status": order["status"],
-        "message": PUBLIC_MESSAGES[order["status"]],
+        "id": order.id,
+        "deviceModel": order.device.model,
+        "receivedDate": order.received_date.isoformat(),
+        "status": order.status,
+        "message": PUBLIC_MESSAGES[order.status],
     }
