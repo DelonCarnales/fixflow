@@ -1,10 +1,10 @@
 # Simple Architecture
 
 ## Frontend
-The frontend uses ordinary HTML, CSS, and JavaScript modules. The pages call one service file. During the first stage, the service returns sample data. Later, the same service will send HTTP requests to FastAPI.
+The frontend uses ordinary HTML, CSS, and JavaScript modules. Pages call a service file. Right now the service returns sample data; the next integration step will replace it with HTTP requests to FastAPI.
 
 ## Backend
-FastAPI exposes REST endpoints. SQLAlchemy models connect the Python code to SQLite.
+FastAPI exposes REST endpoints. SQLAlchemy models connect the Python code to SQLite. The database URL is read from `DATABASE_URL`, so a different SQLAlchemy-supported database can be selected later by changing configuration and installing its driver.
 
 ## Main data
 - Customer: name and phone
@@ -16,8 +16,8 @@ FastAPI exposes REST endpoints. SQLAlchemy models connect the Python code to SQL
 ## Main flow
 Browser UI -> frontend service -> FastAPI -> SQLAlchemy -> SQLite
 
-During the frontend-only stage:
+Current frontend-only flow:
 Browser UI -> mockService -> sample data
 
 ## Important choice
-The frontend should not talk directly to the database. It will use the API contract so the backend can change without rewriting the page behavior.
+The frontend does not talk directly to the database. It uses a service layer and API contract so the backend can change without rewriting page components.
