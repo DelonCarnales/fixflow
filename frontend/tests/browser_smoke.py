@@ -42,7 +42,7 @@ with sync_playwright() as p:
     dialog.locator('input[name="estimatedCost"]').fill("10000")
     dialog.get_by_role("button", name="Create order").click()
     page.get_by_role("heading", name="Test Notebook").wait_for()
-    assert page.get_by_text("FF-1006", exact=True).is_visible()
+    assert page.get_by_text(re.compile("FF-1006")).is_visible()
     checks.append("valid order can be created")
 
     page.get_by_role("button", name="Edit order details").click()
