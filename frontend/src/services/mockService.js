@@ -21,10 +21,22 @@ export async function listOrders() { return cloneOrders(orders); }
 export async function listParts() { return parts.map((part)=>({...part})); }
 export async function createOrder(input) {
   if (!input.customerName.trim() || !input.deviceModel.trim() || !input.problem.trim()) throw new Error('Please fill in the required fields.');
-  if (input.estimatedCost !== null && input.estimatedCost < 0) throw new Error('Estimated cost cannot be negative.');
+  if (input.estimatedCost !== null && (!Number.isFinite(input.estimatedCost) || input.estimatedCost < 0)) throw new Error('Estimated cost must be a non-negative number.');
+  if (!statuses.includes(input.status)) throw new Error('Invalid repair status.');
   const nextId = Math.max(1000, ...orders.map((order)=>Number(order.id.slice(3)) || 1000)) + 1;
   const order = {...input,id:'FF-'+nextId,history:[{status:input.status,date:timeStamp()}]};
   orders = [order,...orders];
+  return cloneOrders([order])[0];
+}
+export async function updateOrder(id, input) {
+  if (!input.customerName.trim() || !input.deviceModel.trim() || !input.problem.trim()) throw new Error('Please fill in the required fields.');
+  if (input.estimatedCost !== null && (!Number.isFinite(input.estimatedCost) || input.estimatedCost < 0)) throw new Error('Estimated cost must be a non-negative number.');
+  if (!statuses.includes(input.status)) throw new Error('Invalid repair status.');
+  const order = orders.find((item) => item.id === id);
+  if (!order) throw new Error('Repair order not found.');
+  const statusChanged = order.status !== input.status;
+  Object.assign(order, input);
+  if (statusChanged) order.history.push({status:input.status,date:timeStamp()});
   return cloneOrders([order])[0];
 }
 export async function updateOrderStatus(id, status) {
