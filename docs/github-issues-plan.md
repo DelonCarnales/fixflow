@@ -1,35 +1,37 @@
-# Initial GitHub Issues Plan
+# GitHub Issues
 
-Create these as real GitHub Issues and apply the matching labels when the repository is connected.
+The initial backlog has been created in the repository. Each issue has a goal, description, acceptance criteria, and an MVP or post-MVP label.
 
 ## MVP issues
-1. Set up React + TypeScript + Vite frontend
-2. Add basic app layout and sidebar
-3. Add dashboard with mock data
-4. Add repair orders table
-5. Add order search and status filter
-6. Add create repair order form
-7. Add form validation
-8. Add repair order details page
-9. Add status update interaction and history
-10. Add spare parts page
-11. Add customer order lookup page
-12. Write OpenAPI contract
-13. Set up FastAPI backend
-14. Add in-memory repair order endpoints
-15. Add in-memory spare part endpoints
-16. Add SQLAlchemy models
-17. Add SQLite persistence
-18. Connect frontend services to backend
-19. Add frontend tests
-20. Add backend tests
-21. Test the full order workflow in browser
-22. Update README with setup and test instructions
+- #1 Set up React, TypeScript and Vite frontend
+- #2 Finalize MVP scope and acceptance criteria
+- #3 Set up basic app layout and sidebar
+- #4 Add dashboard with mock data
+- #5 Add repair orders table
+- #6 Add order search and status filter
+- #7 Add create repair order form
+- #8 Add repair order form validation
+- #9 Add repair order details page
+- #10 Add status updates and repair history
+- #11 Add edit repair order form
+- #12 Add spare parts page
+- #13 Add customer order status lookup page
+- #14 Create OpenAPI contract
+- #15 Set up FastAPI backend
+- #16 Implement in-memory repair order endpoints
+- #17 Implement in-memory spare parts endpoints
+- #18 Add SQLAlchemy models
+- #19 Replace in-memory store with SQLite
+- #20 Connect frontend service to the real API
+- #21 Add frontend tests
+- #22 Add backend API tests
+- #23 Run full repair workflow in a browser
+- #24 Update README with setup and testing commands
 
 ## Post-MVP issues
-1. Add sorting to the orders table
-2. Improve mobile layout
-3. Add CSV export for repair orders
+- #25 Improve mobile layout
+- #26 Add sorting to repair orders table
+- #27 Add CSV export for repair orders
 
-## Notes
-These are planned issues, not issues already created on GitHub. Create them after the repository is available and labels are set up.
+## Workflow
+Work on one issue at a time. Do not close an issue until the acceptance criteria have been checked. If a bug is discovered while using the running app, create a new issue with the `user-test-bug` label and include Goal, Description, steps to reproduce, expected result, and actual result.
