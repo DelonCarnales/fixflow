@@ -8,7 +8,17 @@ with sync_playwright() as p:
     browser = p.chromium.launch(headless=True)
     page = browser.new_page(viewport={"width": 1440, "height": 1000})
     page.on("pageerror", lambda error: errors.append(str(error)))
-    page.on("console", lambda message: errors.append(f"{message.text} at {message.location}") if message.type == "error" else None)
+
+    def collect_console_error(message):
+        if message.type != "error":
+            return
+        url = message.location.get("url", "")
+        # The unknown-order lookup intentionally returns HTTP 404. The UI handles it.
+        if url.endswith("/public/orders/FF-9999") and "404" in message.text:
+            return
+        errors.append(f"{message.text} at {message.location}")
+
+    page.on("console", collect_console_error)
     page.goto("http://127.0.0.1:5173", wait_until="networkidle")
 
     page.get_by_role("heading", name="Good afternoon").wait_for()
