@@ -6,16 +6,11 @@
       "version": "22"
     }
   },
-  "forwardPorts": [5173, 8000],
+  "forwardPorts": [8000],
   "portsAttributes": {
-    "5173": {
-      "label": "FixFlow Frontend",
-      "onAutoForward": "openBrowser",
-      "visibility": "private"
-    },
     "8000": {
-      "label": "FixFlow API",
-      "onAutoForward": "silent",
+      "label": "FixFlow App",
+      "onAutoForward": "openBrowser",
       "visibility": "private"
     }
   },
