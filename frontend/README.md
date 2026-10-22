@@ -11,6 +11,10 @@ python3 -m http.server 5173
 
 Open http://localhost:5173. The frontend will call the backend at http://127.0.0.1:8000.
 
+## Run without downloading the repository
+
+Create a GitHub Codespace from the repository's **Code → Codespaces → Create codespace on main** menu. The devcontainer starts both the frontend and backend. Open the forwarded port labelled **FixFlow Frontend** (5173). See the root README for details.
+
 ## Run with mock data
 Open http://localhost:5173/?mock=1. This loads `src/services/mockService.js` without calling the backend. The data is kept in memory and resets when the page reloads.
 
