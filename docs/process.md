@@ -1,7 +1,7 @@
 # Development Process
 
 ## GitHub issues are the backlog
-GitHub Issues are the source of truth for tasks. Work on one issue at a time. `docs/github-issues-plan.md` is only an index; if it differs from GitHub, GitHub wins.
+GitHub Issues are the source of truth for tasks. `docs/github-issues-plan.md` is only an index; if it differs from GitHub, GitHub wins.
 
 ## Labels
 - `mvp`: required for the first working version
@@ -35,7 +35,10 @@ When a bug is discovered while using the running app:
 7. Run the full app and test the main flows.
 
 ## Useful commands
-- Frontend: `cd frontend && npm test`
-- Backend: `cd backend && python -m pytest -q`
-- Frontend local server: `cd frontend && python3 -m http.server 5173`
-- Backend local server: `cd backend && python -m uvicorn main:app --reload --port 8000`
+
+The following server commands are for **local development on a Mac or PC**. In Codespaces, use port 8000 for the combined app as documented in the root README.
+
+- Frontend tests: `cd frontend && npm test`
+- Backend tests: `cd backend && python -m pytest -q`
+- Local frontend server: `cd frontend && python3 -m http.server 5173`
+- Local backend server: `cd backend && python -m uvicorn main:app --reload --port 8000`
