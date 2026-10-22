@@ -5,9 +5,10 @@ Please keep this project at a normal student level. Use clear code and avoid unn
 - Follow the stages in `docs/plan.md`.
 - Read `docs/spec.md` before adding features.
 - Keep the interface simple and easy to understand.
+- Use HTML, CSS, and JavaScript modules for the frontend unless the project plan changes.
+- Keep mock data and data operations in `frontend/src/services/mockService.js`.
 - Do not add features outside the MVP without a good reason.
-- Use mock data only during the first frontend stage.
-- Keep API request and response shapes in `openapi.yaml`.
+- Later, keep API request and response shapes in `openapi.yaml`.
 - Use SQLAlchemy for database access instead of writing database-specific SQL throughout the app.
 - Add or update tests when behavior changes.
 - Do not claim that a test passed unless it was actually run.
