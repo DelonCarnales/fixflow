@@ -114,6 +114,15 @@ with sync_playwright() as p:
     page.set_viewport_size({"width": 390, "height": 844})
     assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth")
     checks.append("mobile viewport has no page-level horizontal overflow")
+    page.close()
+
+    # A backend outage should show a readable message instead of breaking the page.
+    error_page = browser.new_page(viewport={"width": 1280, "height": 900})
+    error_page.route("http://127.0.0.1:8000/**", lambda route: route.abort())
+    error_page.goto("http://127.0.0.1:5173", wait_until="networkidle")
+    error_page.get_by_text(re.compile("Could not connect to the backend")).wait_for(state="visible")
+    checks.append("backend connection failure shows a readable message")
+    error_page.close()
     browser.close()
 
 if errors:
