@@ -1,9 +1,9 @@
 # Simple Architecture
 
-## Planned frontend
-React pages call a small service file. During the first stage, the service returns mock data. Later, the same service will send HTTP requests to FastAPI.
+## Frontend
+The frontend uses ordinary HTML, CSS, and JavaScript modules. The pages call one service file. During the first stage, the service returns sample data. Later, the same service will send HTTP requests to FastAPI.
 
-## Planned backend
+## Backend
 FastAPI exposes REST endpoints. SQLAlchemy models connect the Python code to SQLite.
 
 ## Main data
@@ -20,4 +20,4 @@ During the frontend-only stage:
 Browser UI -> mockService -> sample data
 
 ## Important choice
-The frontend should not talk directly to the database. It will use the API contract so the backend can change without rewriting page components.
+The frontend should not talk directly to the database. It will use the API contract so the backend can change without rewriting the page behavior.
