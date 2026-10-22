@@ -92,9 +92,12 @@ with sync_playwright() as p:
     page.get_by_role("button", name=re.compile("Customer lookup")).click()
     page.locator("#lookup-number").fill("FF-1003")
     page.get_by_role("button", name="Check status").click()
-    assert page.get_by_text("Your device is ready. Please contact the shop to arrange pickup.").is_visible()
+    ready_message = page.get_by_text("Your device is ready. Please contact the shop to arrange pickup.")
+    ready_message.wait_for(state="visible")
+    assert ready_message.is_visible()
     page.locator("#lookup-number").fill("FF-9999")
     page.get_by_role("button", name="Check status").click()
+    page.get_by_role("alert").wait_for(state="visible")
     assert page.get_by_role("alert").is_visible()
     checks.append("customer lookup handles known and unknown order numbers")
 
