@@ -131,3 +131,18 @@ def test_created_data_is_available_in_a_new_database_session(client):
 def test_negative_part_price_is_rejected(client):
     response = client.post("/parts", json={"name": "Bad part", "stock": 1, "unitPrice": -100})
     assert response.status_code == 422
+
+
+def test_codespaces_frontend_origin_is_allowed(client):
+    origin = "https://demo-codespace-5173.app.github.dev"
+    response = client.options(
+        "/orders",
+        headers={
+            "Origin": origin,
+            "Access-Control-Request-Method": "POST",
+            "Access-Control-Request-Headers": "content-type",
+        },
+    )
+    assert response.status_code == 200
+    assert response.headers["access-control-allow-origin"] == origin
+    assert response.headers["access-control-allow-credentials"] == "true"
