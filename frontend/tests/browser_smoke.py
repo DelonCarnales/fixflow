@@ -23,8 +23,12 @@ with sync_playwright() as p:
 
     page.get_by_role("heading", name="Good afternoon").wait_for()
     assert page.get_by_text("Active orders", exact=True).is_visible()
+    assert page.get_by_text("Waiting for parts", exact=True).first.is_visible()
+    assert page.get_by_text("Ready for pickup", exact=True).first.is_visible()
+    assert page.get_by_text("Completed", exact=True).first.is_visible()
+    assert page.get_by_text("Live backend", exact=True).is_visible()
     assert page.get_by_text("FF-1001", exact=True).first.is_visible()
-    checks.append("dashboard loads with sample orders")
+    checks.append("dashboard loads from the API with all summary cards")
 
     page.get_by_role("button", name=re.compile("Repair orders")).click()
     page.get_by_role("textbox", name="Search repair orders").fill("MacBook")
@@ -54,6 +58,13 @@ with sync_playwright() as p:
     page.get_by_role("heading", name="Test Notebook").wait_for()
     assert page.get_by_text(re.compile("FF-1006")).is_visible()
     checks.append("valid order can be created")
+
+    page.get_by_role("button", name="Edit order details").click()
+    cancel_dialog = page.get_by_role("dialog", name="Edit repair order")
+    cancel_dialog.locator('input[name="customerName"]').fill("Canceled Change")
+    cancel_dialog.get_by_role("button", name="Cancel").click()
+    assert page.get_by_text("Test Customer", exact=True).is_visible()
+    checks.append("canceling an edit does not save changes")
 
     page.get_by_role("button", name="Edit order details").click()
     edit_dialog = page.get_by_role("dialog", name="Edit repair order")
