@@ -65,3 +65,22 @@ export function resetMockData() {
   orders = cloneOrders(starterOrders);
   parts = starterParts.map((part)=>({...part}));
 }
+export async function getPublicOrderStatus(id) {
+  const order = (await listOrders()).find((item) => item.id.toLowerCase() === id.toLowerCase());
+  if (!order) return null;
+  return {
+    id: order.id,
+    deviceModel: order.deviceModel,
+    receivedDate: order.receivedDate,
+    status: order.status,
+    message: ({
+      "Received": "Your device has been received and is waiting for a technician.",
+      "Diagnosing": "A technician is checking your device to find the problem.",
+      "Waiting for parts": "The repair is waiting for the required part to arrive.",
+      "Repairing": "The repair is in progress.",
+      "Ready for pickup": "Your device is ready. Please contact the shop to arrange pickup.",
+      "Completed": "This repair has been completed.",
+      "Cancelled": "This repair order has been cancelled."
+    })[order.status] || "Please contact the shop for an update."
+  };
+}
