@@ -2,6 +2,8 @@ import {listOrders,listParts,createOrder,updateOrder,updateOrderStatus,savePart,
 const content=document.getElementById('page-content');
 const modal=document.getElementById('modal-root');
 const crumb=document.getElementById('breadcrumb-title');
+const connectionMode=document.getElementById('connection-mode');
+if(connectionMode){connectionMode.textContent=new URLSearchParams(window.location.search).get('mock')==='1'?'Mock data mode':'Live backend';}
 const statuses=['Received','Diagnosing','Waiting for parts','Repairing','Ready for pickup','Completed','Cancelled'];
 let page='dashboard', orders=[], parts=[], selectedId='', search='', filter='All statuses', lookup='', editingOrderId='', editingPartId='', dataError='';
 const escapeText=(value)=>String(value??'').replace(/[&<>"']/g,(ch)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
