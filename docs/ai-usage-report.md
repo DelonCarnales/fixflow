@@ -1,7 +1,7 @@
 # AI Usage Report
 
 ## How AI was used
-AI assistance was used to brainstorm the project idea, organize the specification, draft documentation, and split work into GitHub Issues. The project is intended to stay at a level that a student can understand and explain.
+AI assistance was used to brainstorm the project idea, organize the specification, draft documentation, split work into GitHub Issues, and help implement and test the first version. The code and project scope are kept at a level that a student can understand and explain.
 
 ## Decisions made for FixFlow
 - Chose a repair shop workflow instead of a generic tracker.
@@ -10,10 +10,10 @@ AI assistance was used to brainstorm the project idea, organize the specificatio
 - Chose FastAPI for the backend.
 - Chose OpenAPI as the contract between frontend and backend.
 - Chose SQLite with SQLAlchemy for persistent storage.
-- Planned to work in stages and run both automated and manual tests.
+- Worked in stages: mock frontend, API contract, in-memory backend, database storage, then frontend/backend integration.
 
-## How generated work will be checked
-AI-generated code and docs are drafts, not proof of correctness. I will run the app locally, check the main user flows, run the tests, and create a `user-test-bug` issue for any bug that I discover by using the running app. An issue should only be closed after QA checks its acceptance criteria.
+## How generated work is checked
+Generated code and docs are drafts, not proof of correctness. The project has automated tests in GitHub Actions. The browser smoke test uses Playwright to create and edit data through the app, with FastAPI and SQLite running. Bugs found while testing should be recorded as `user-test-bug` issues with PM/QA notes, and an issue should only be closed after its acceptance criteria are checked.
 
 ## Current status
-Planning docs and the initial GitHub Issues have been added. The first frontend prototype is implemented and browser-tested. The OpenAPI contract and FastAPI backend are implemented. SQLAlchemy and SQLite are now used for persistent backend storage; the frontend/backend connection is still pending.
+The core frontend, OpenAPI contract, FastAPI backend, and SQLite ORM storage are in the repository. The frontend service now uses the API by default and supports mock mode for frontend-only work. The latest end-to-end integration test result is available in GitHub Actions.
