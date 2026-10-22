@@ -1,6 +1,6 @@
 function getApiBase() {
   const host = window.location.hostname;
-  const codespaceMatch = host.match(/^(.*)-5173\\.app\\.github\\.dev$/);
+  const codespaceMatch = host.match(/^(.*)-5173\.app\.github\.dev$/);
 
   if (codespaceMatch) {
     // The frontend and backend use separate forwarded ports in GitHub Codespaces.
