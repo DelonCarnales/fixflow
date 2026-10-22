@@ -11,7 +11,7 @@ Run from the `frontend` folder with `npm test`. This uses Node's built-in test r
 - Adding a spare part creates a new ID.
 
 ## Full browser test
-The Playwright test at `frontend/tests/browser_smoke.py` opens the app in normal mode, which calls the backend.
+The Playwright test at `frontend/tests/browser_smoke.py` opens the app from FastAPI at `http://127.0.0.1:8000`. This deliberately tests the same-origin setup used by Codespaces, where FastAPI serves both the frontend and API. The local split-port setup (frontend 5173, API 8000) is still available for local development.
 
 - Dashboard and recent orders load from the API.
 - Search and status filters work.
@@ -25,7 +25,7 @@ The Playwright test at `frontend/tests/browser_smoke.py` opens the app in normal
 - The page has no page-level horizontal overflow at a phone-sized viewport.
 - If the backend is unavailable, the UI shows a readable connection error.
 
-The GitHub Actions workflow starts FastAPI with a fresh SQLite file and runs the browser test against it. See the linked Actions run for the actual result.
+The GitHub Actions workflow starts FastAPI with a fresh SQLite file and runs the browser test from the FastAPI-served frontend. This checks that the interface, static assets, and API requests work on one origin, as configured for Codespaces. See the linked Actions run for the actual result.
 
 ## Backend tests
 The Pytest tests use a temporary SQLite database. They cover:
