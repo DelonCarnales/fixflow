@@ -1,5 +1,12 @@
 function getApiBase() {
   const host = window.location.hostname;
+
+  // In Codespaces, the FastAPI server also serves the UI on port 8000.
+  // Same-origin requests avoid authentication/CORS issues between forwarded ports.
+  if (/-8000\.app\.github\.dev$/.test(host)) {
+    return "";
+  }
+
   const codespaceMatch = host.match(/^(.*)-5173\.app\.github\.dev$/);
 
   if (codespaceMatch) {
