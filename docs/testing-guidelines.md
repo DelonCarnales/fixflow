@@ -21,8 +21,9 @@ The Playwright test at `frontend/tests/browser_smoke.py` opens the app in normal
 - A status change is shown with history.
 - Spare parts can be added and renamed without changing their IDs.
 - Customer lookup handles a known and an unknown order number.
-- The browser console has no errors.
+- The browser has no unexpected console errors (the deliberate unknown-order 404 is expected).
 - The page has no page-level horizontal overflow at a phone-sized viewport.
+- If the backend is unavailable, the UI shows a readable connection error.
 
 The GitHub Actions workflow starts FastAPI with a fresh SQLite file and runs the browser test against it. See the linked Actions run for the actual result.
 
