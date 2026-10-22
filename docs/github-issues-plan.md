@@ -40,12 +40,12 @@ GitHub Issues are the canonical backlog. This document is only a quick index; Gi
 
 ## Latest verified checks
 
-[GitHub Actions run #55](https://github.com/DelonCarnales/fixflow/actions/runs/39833487378) passed on October 22, 2026:
+[GitHub Actions run #59](https://github.com/DelonCarnales/fixflow/actions/runs/39838767625) passed on October 22, 2026:
 - 8 frontend mock service tests
 - 14 browser smoke checks against the frontend, FastAPI, and SQLite
 - 16 backend/API/OpenAPI/CORS tests (with 3 non-failing warnings)
 - Codespaces devcontainer JSON and startup script syntax checks
-- Test that FastAPI serves the frontend at the root path for same-origin Codespaces use
+- Browser checks open the app through FastAPI on port 8000, matching the single-port Codespaces setup; the CI job no longer starts a separate port 5173 frontend server
 
 ## Workflow
 Every issue should have Goal, Description, Acceptance criteria, Out of scope, and Constraints. PM grooms the scope. The engineer implements without closing it. QA checks acceptance criteria, runs tests, posts a PASS/FAIL comment, and closes only after PASS.
