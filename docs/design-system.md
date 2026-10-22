@@ -1,7 +1,10 @@
 # Design Notes
 
-## Reference
-Use a simple admin dashboard style similar to common repair-shop or inventory tools. Keep the layout practical and readable. The design should use a clear sidebar, page title, small summary cards, tables, and simple forms.
+## Design references
+- shadcn/ui dashboard example: https://ui.shadcn.com/examples/dashboard
+- shadcn/ui dashboard and sidebar blocks: https://ui.shadcn.com/blocks?category=dashboard
+
+Use these as references for the sidebar, summary cards, and table layout. Keep the project simpler than the full examples and do not copy unrelated features. The design should be practical and readable.
 
 ## Basic rules
 - Light background with dark text
