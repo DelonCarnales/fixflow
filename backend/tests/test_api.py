@@ -126,3 +126,8 @@ def test_created_data_is_available_in_a_new_database_session(client):
     saved = client.get("/orders/FF-1006")
     assert saved.status_code == 200
     assert saved.json()["customerName"] == "Test Customer"
+
+
+def test_negative_part_price_is_rejected(client):
+    response = client.post("/parts", json={"name": "Bad part", "stock": 1, "unitPrice": -100})
+    assert response.status_code == 422
