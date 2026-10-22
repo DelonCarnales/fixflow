@@ -1,20 +1,41 @@
 # Development Process
 
-## GitHub labels
+## GitHub issues are the backlog
+GitHub Issues are the source of truth for tasks. Work on one issue at a time. `docs/github-issues-plan.md` is only an index; if it differs from GitHub, GitHub wins.
+
+## Labels
 - `mvp`: required for the first working version
-- `post-mvp`: optional improvements
+- `post-mvp`: optional improvements after the MVP
 - `user-test-bug`: bugs found while testing the running app
 
-## Issue workflow
-1. Create one issue for each clear piece of work.
-2. Add a Goal and Description.
-3. Make acceptance criteria so it is clear how to check the task.
-4. Add `mvp` or `post-mvp`.
-5. Work on the issue and test the change.
-6. If a bug is found during manual testing, create a separate `user-test-bug` issue.
-7. Ask the PM to review and clarify the bug issue.
-8. Ask QA to add test cases and verify the fix.
-9. QA closes an issue only after checking that it is done.
+## Issue lifecycle
+1. Pick an open issue.
+2. PM grooms the issue using `docs/task-template.md` and `docs/team/pm.md`.
+3. Engineer implements the issue and writes/updates tests; engineer does not close the issue.
+4. QA uses `docs/team/qa-engineer.md`, runs tests, checks the app when possible, and posts a PASS or FAIL comment.
+5. If QA finds a failure, the engineer fixes it and QA retests.
+6. Close an issue only after QA posts PASS.
+7. Repeat until every MVP issue and every `user-test-bug` issue is closed.
 
-## Keep it honest
-The issue should reflect real work. Do not close issues just to make the board look finished. Record what was tested and what still needs work.
+## Bug workflow
+When a bug is discovered while using the running app:
+- Create an issue with the `user-test-bug` label.
+- Include Goal, Description, reproduction steps, expected result, actual result, and environment.
+- PM grooms the issue and clarifies scope.
+- QA adds test cases and checks the fix.
+- The issue remains open until the fix is verified.
+
+## Development stages
+1. Plan and document the app.
+2. Build the frontend with mockService.
+3. Define the frontend/backend contract in `openapi.yaml`.
+4. Implement FastAPI with an in-memory store.
+5. Replace the in-memory store with SQLite and SQLAlchemy.
+6. Connect the frontend service to the API.
+7. Run the full app and test the main flows.
+
+## Useful commands
+- Frontend: `cd frontend && npm test`
+- Backend: `cd backend && python -m pytest -q`
+- Frontend local server: `cd frontend && python3 -m http.server 5173`
+- Backend local server: `cd backend && python -m uvicorn main:app --reload --port 8000`
