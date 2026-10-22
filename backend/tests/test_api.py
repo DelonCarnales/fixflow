@@ -52,6 +52,13 @@ def valid_order(**updates):
     return data
 
 
+def test_root_serves_frontend_for_codespaces_same_origin(client):
+    response = client.get("/")
+    assert response.status_code == 200
+    assert "FixFlow - Repair Desk" in response.text
+    assert 'src="./src/app.js"' in response.text
+
+
 def test_health_and_list_orders(client):
     assert client.get("/health").json() == {"status": "ok"}
     response = client.get("/orders")
