@@ -39,7 +39,7 @@ GitHub Issues are the canonical backlog. This document is only a quick index; Gi
 - #30 Treat the expected unknown-order 404 as handled — closed (QA PASS)
 
 ## Latest verified checks
-GitHub Actions run #48 passed:
+GitHub Actions run #49 passed (latest verified run):
 - 8 frontend service tests
 - 14 browser smoke checks against the real frontend, FastAPI, and SQLite
 - 15 backend/API/OpenAPI/CORS tests
