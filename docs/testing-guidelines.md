@@ -1,15 +1,30 @@
 # Testing Guidelines
 
-## Frontend
-- The order list displays sample orders.
-- Search returns matching orders.
-- Status filter shows only orders with the selected status.
-- Required fields show validation errors.
-- A valid order can be added and appears in the list.
-- A user can open an order details page.
-- Status labels show the correct text.
+## Frontend service tests
+Run from the `frontend` folder with `npm test`. This uses Node's built-in test runner, so there is no install step.
 
-## Backend
+- The service returns the seeded orders.
+- Creating an order gives it a new order number and initial history.
+- Changing status updates the order and appends a history entry.
+- Negative spare-part quantity is rejected.
+- Adding a spare part creates a new ID.
+
+## Browser checks for the frontend prototype
+The following flows were checked in Chromium against the current frontend source:
+- Dashboard summary and recent orders appear.
+- Search finds the matching device.
+- Status filter only shows matching orders.
+- Empty new-order form shows validation errors.
+- Valid order can be created and opens its details.
+- Changing order status updates the current status and history.
+- Spare part can be added.
+- Customer lookup displays the correct status.
+- Unknown order number shows a clear message.
+- The page has no page-level horizontal overflow at a phone-sized viewport.
+
+The browser in the development container blocks direct navigation to local files and local URLs, so these UI flows were tested using an inline test bundle made from the same application source. The normal app itself is served with the command in the README.
+
+## Backend tests (planned)
 - Creating an order returns the created order.
 - Missing required fields return a validation error.
 - Unknown order IDs return 404.
@@ -18,21 +33,8 @@
 - Updating an order changes its saved values.
 - Data remains after restarting the app once SQLite is implemented.
 
-## Manual browser testing
-Follow this main flow:
-1. Open the app.
-2. Open Repair Orders.
-3. Search for an existing order.
-4. Create a new order with valid data.
-5. Open the new order.
-6. Change its status to Diagnosing.
-7. Refresh and confirm the data is still present after database integration.
-8. Use the customer lookup page with the order number.
-9. Try submitting a form with required fields missing.
-10. Check the browser console for errors.
-
 ## Bug reporting
-For a bug found during manual testing, create a GitHub issue with:
+For a bug found while using the running app, create a GitHub issue with:
 - Label: `user-test-bug`
 - Goal
 - Description
