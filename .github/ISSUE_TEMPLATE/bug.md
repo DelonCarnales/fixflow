@@ -1,6 +1,6 @@
 ---
 name: Bug found during testing
-about: Report a bug found while running the app
+about: Report a bug found while using the running app
 title: "[User Test Bug] "
 labels: user-test-bug
 assignees: ""
@@ -20,3 +20,15 @@ assignees: ""
 ## Environment
 - Browser:
 - Operating system:
+
+# Acceptance criteria
+- [ ] The issue can be reproduced before the fix.
+- [ ] The same steps pass after the fix.
+- [ ] Related tests are updated.
+
+# Out of scope
+
+# Constraints
+- Keep the fix focused on the reported behavior.
+- Ask PM to clarify scope and QA to add test cases.
+- Do not close before QA verifies the fix.
