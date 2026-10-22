@@ -1,43 +1,68 @@
-# Brainstorming Before Development
+# Brainstorming and Chat History
 
-This file keeps a record of the discussion that happened before coding started.
+This file records the user-visible discussion that happened before implementation started. It is a short transcript of the relevant conversation, not platform metadata.
 
-## Assignment and constraints
+## 1. Assignment request
 
-The assignment asked for a project idea different from Part I, not a basic habit tracker or to-do list. It also asked to follow the two AI Shipping articles, use GitHub Issues, include Markdown documentation, build in iterations, use SQLite with an ORM, and test the app that actually runs.
+**Student:**
 
-## First idea
+> Pick a project idea, different from Part I, and come up with a non trivial app (no habit tracker, to-do list, etc). Come up with an idea you will be proud to show off.
+>
+> Fully follow the AI-native development and full-stack app articles. Use GitHub Issues, a design agent or good design references, close all MVP tags, use SQLite and an ORM, and work in iterations: frontend with mockService, OpenAPI contract, backend with in-memory data, SQLite storage, then frontend/backend integration.
+>
+> Add the Markdown files and brainstorming chat history to the repo. Actually run the app and thoroughly test it. When testing finds a bug, create a GitHub issue with Goal and Description, have PM groom it and QA add test cases. Use the labels `mvp`, `post-mvp`, and `user-test-bug`.
 
-I chose FixFlow, a repair-order management app for a small laptop and computer repair shop. I picked it because it has a real workflow but does not need complicated features to be useful.
+## 2. Initial project proposal
 
-## Discussion notes
+**Assistant:**
 
-**My initial request:** I asked to begin by planning the actions for the Web Frontend assignment and said the work should be written in a way that looks like a normal student project.
+> I proposed FixFlow, a repair-order management app for a small computer and laptop repair shop. It would let staff create repair orders, track repair status and history, manage a simple spare-parts list, and let customers check order status by number.
 
-**Project proposal:** The first idea was FixFlow. Its main features are repair orders, customer/device details, repair statuses, spare parts, and a public status lookup by order number.
+The idea was selected because it has a real workflow but is small enough for a university project.
 
-**My preferences:** I said not to make it too impressive or too advanced. I asked to use ordinary tools and code that a regular student could understand, except where the assignment specifically requires something.
+## 3. Student preference
 
-**Final scope decision:** Keep the first version simple. The interface can use a sidebar, dashboard cards, tables, status labels, and forms. The required technical steps stay: frontend with a mock service, OpenAPI contract, FastAPI with temporary in-memory data, SQLite via SQLAlchemy, frontend/backend integration, and tests.
+**Student:**
 
-## What is not part of the MVP
+> не надо делать прям вау, сделай попроще используй обычные вещи не то что знают мидл или сениор а как обычный студент. если только по рекомендациям в задании не просят того. начни делать этап 1. 1)создай сам репозитории 2)хз 3)англ
 
-- Online payments
-- SMS or email notifications
-- AI diagnosis of broken devices
-- Complex roles and staff permissions
-- Multiple repair-shop branches
+**Assistant:**
 
-## Initial workflow
+> I kept the project at a normal student level, with English documentation and a simple interface. The first docs included a plan, specification, design notes, testing rules, architecture notes, role files for PM/engineer/QA, a task template, and GitHub issue templates.
 
-1. Plan and document the app.
-2. Build the frontend with sample data through one service layer.
-3. Describe the API in `openapi.yaml`.
-4. Implement the API with temporary in-memory data.
+## 4. Repository setup
+
+**Assistant:**
+
+> I explained that the GitHub connector needed to be connected before I could publish the files or create Issues.
+
+**Student:**
+
+> https://github.com/DelonCarnales/fixflow
+
+After the student created the public repository, the project documents and GitHub issues were added there.
+
+## 5. Decisions made before and during the first implementation
+
+- Use plain HTML, CSS, and JavaScript modules for the frontend so it is easy to run and explain.
+- Use a simple dashboard, tables, forms, status labels, and a sidebar, following the dashboard layout references in `docs/design-system.md`.
+- Use a single mock service for frontend-only work.
+- Define the API in `openapi.yaml`.
+- Use FastAPI for the API.
+- Use SQLAlchemy ORM with SQLite by default and read the database URL from `DATABASE_URL`.
+- Keep `?mock=1` available so the frontend can still be used without the backend.
+- Use GitHub Issues as the canonical backlog and keep the app features limited to the MVP.
+
+## 6. Implementation stages
+
+1. Plan the app and write the docs.
+2. Build the frontend with mockService.
+3. Add the OpenAPI contract.
+4. Implement the backend with temporary in-memory data.
 5. Replace the temporary store with SQLite and SQLAlchemy.
-6. Connect the frontend to the API.
-7. Run the app, test the main flow, create bug issues when needed, and fix problems.
+6. Connect the frontend service to the backend.
+7. Run browser tests and backend tests; create and fix issues for problems found during real testing.
 
-## Note
+## Current status when this note was updated
 
-This is a project brainstorming record written before implementation. It summarizes the important decisions from the chat rather than exporting platform metadata or private system messages.
+The frontend, OpenAPI contract, FastAPI backend, SQLite persistence, integration service, and browser smoke tests are in the repository. The exact current test status is linked from GitHub Actions and the relevant GitHub Issues.
