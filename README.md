@@ -15,21 +15,12 @@ This is a student project for a Web Frontend course. The goal is to build a work
 - Frontend: HTML, CSS, and JavaScript modules
 - Backend: Python and FastAPI
 - API contract: OpenAPI in `openapi.yaml`
-- Database: SQLite with SQLAlchemy ORM (next backend stage)
+- Database: SQLite with SQLAlchemy ORM
 - Tests: Node's built-in test runner, Pytest, and Playwright browser checks
 
-## Run the frontend
-In one terminal:
+## Run the app
 
-```bash
-cd frontend
-python3 -m http.server 5173
-```
-
-Open http://localhost:5173.
-
-## Run the backend
-In a second terminal:
+Start the backend in one terminal:
 
 ```bash
 cd backend
@@ -37,9 +28,19 @@ python -m pip install -r requirements.txt
 python -m uvicorn main:app --reload --port 8000
 ```
 
+Start the frontend in another terminal:
+
+```bash
+cd frontend
+python3 -m http.server 5173
+```
+
+Open http://localhost:5173. The normal mode uses the FastAPI backend. To work with sample data only, open http://localhost:5173/?mock=1.
+
 The API docs are at http://127.0.0.1:8000/docs.
 
 ## Run tests
+
 Frontend mock service tests:
 
 ```bash
@@ -47,14 +48,15 @@ cd frontend
 npm test
 ```
 
-Backend and OpenAPI contract tests:
+Backend API and OpenAPI tests:
 
 ```bash
 cd backend
+python -m pip install -r requirements.txt
 python -m pytest -q
 ```
 
-Browser smoke tests need Playwright. Start the frontend server first, then run:
+Browser smoke tests need Playwright. Start the backend and frontend first, then run:
 
 ```bash
 python -m pip install -r frontend/requirements-test.txt
@@ -62,7 +64,7 @@ python -m playwright install chromium
 python frontend/tests/browser_smoke.py
 ```
 
-GitHub Actions runs the syntax checks, unit tests, browser smoke tests, and backend tests when relevant frontend/backend files change.
+GitHub Actions runs JavaScript syntax checks, mock service tests, browser smoke tests against the SQLite-backed API, and backend tests when relevant files change.
 
 ## Development stages
 1. Plan and write the docs.
@@ -74,4 +76,4 @@ GitHub Actions runs the syntax checks, unit tests, browser smoke tests, and back
 7. Run the complete app and test the main flows.
 
 ## Current status
-The planning docs, frontend with mockService, OpenAPI contract, and FastAPI backend with SQLite/SQLAlchemy are in place. The frontend browser smoke tests and backend API tests pass in GitHub Actions. The frontend is still using sample data and is not connected to the backend yet; integration is the next step.
+Planning docs, the frontend, mock service, OpenAPI contract, and FastAPI backend with SQLite/SQLAlchemy are in the repository. The frontend now defaults to the real API and can still run in mock mode with `?mock=1`. Check the latest GitHub Actions run for the current full-flow test result.
