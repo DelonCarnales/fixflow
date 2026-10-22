@@ -60,7 +60,7 @@ with sync_playwright() as p:
     page.get_by_role("button", name=re.compile("Repair orders")).click()
     page.get_by_role("textbox", name="Search repair orders").fill("Updated Notebook")
     assert page.get_by_text("FF-1006", exact=True).is_visible()
-    page.get_by_role("button", name=re.compile("Updated Notebook")).click()
+    page.get_by_role("button", name=re.compile("FF-1006")).click()
     page.get_by_role("heading", name="Updated Notebook").wait_for()
     assert page.get_by_text("Updated Test Customer", exact=True).is_visible()
     checks.append("edited order stays saved after a browser refresh")
