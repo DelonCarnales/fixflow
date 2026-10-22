@@ -41,15 +41,15 @@ The API docs are at http://127.0.0.1:8000/docs.
 
 ## Run it in GitHub without installing anything on your Mac
 
-This repository is configured for GitHub Codespaces. Codespaces runs the app in a cloud development environment, so you only need a browser. It uses the same frontend and backend as the local setup.
+This repository is configured for GitHub Codespaces. Codespaces runs the app in a cloud development environment, so you only need a browser. In Codespaces, FastAPI also serves the frontend on port 8000 so browser requests to the API stay on the same origin and avoid forwarded-port CORS/authentication issues.
 
 1. Open the repository on GitHub.
 2. Click the green **Code** button and select **Codespaces**.
 3. Click **Create codespace on main**.
-4. Wait for the setup to finish. The configured environment installs the Python test/API packages and Node.js, then starts the frontend and backend.
-5. Open the forwarded **FixFlow Frontend** port (5173). If it did not open automatically, find port 5173 in the **Ports** tab and choose **Open in Browser**.
+4. Wait for the setup to finish. The configured environment installs the Python test/API packages and Node.js, then starts the app.
+5. Open the forwarded **FixFlow App** port (8000). If it did not open automatically, find port 8000 in the **Ports** tab and choose **Open in Browser**. Use port 8000 for Codespaces; port 5173 is only for local development and CI tests.
 
-If the app has not started, open the Codespaces terminal and run:
+If you pull updates to this repository and the old server is still running, open the Codespaces terminal and run:
 
 ```bash
 bash .devcontainer/start.sh
