@@ -1,10 +1,5 @@
 # Engineer Notes
 
-- Keep code readable and suitable for a student project.
-- Follow the current issue rather than adding extra features.
-- Reuse simple components when it helps.
-- Keep API calls in service files, not spread across every page.
-- Add useful error messages.
-- Run the relevant tests after making changes.
-- Explain any manual steps needed to run the app.
-- Do not claim something works if it has not been checked.
+The canonical implementation guide is now `docs/team/software-engineer.md`.
+
+This file is kept as a small pointer for older references. Follow the current issue lifecycle in `docs/process.md`: implement one groomed issue at a time, write tests, report the commands and results, and do not close the issue.
