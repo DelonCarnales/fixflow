@@ -54,6 +54,17 @@ with sync_playwright() as p:
     assert page.get_by_text("Updated Test Customer", exact=True).is_visible()
     checks.append("editing order saves changed values")
 
+    # Refresh the page to make sure the changes were saved by the backend.
+    page.reload(wait_until="networkidle")
+    page.get_by_role("heading", name="Good afternoon").wait_for()
+    page.get_by_role("button", name=re.compile("Repair orders")).click()
+    page.get_by_role("textbox", name="Search repair orders").fill("Updated Notebook")
+    assert page.get_by_text("FF-1006", exact=True).is_visible()
+    page.get_by_role("button", name=re.compile("Updated Notebook")).click()
+    page.get_by_role("heading", name="Updated Notebook").wait_for()
+    assert page.get_by_text("Updated Test Customer", exact=True).is_visible()
+    checks.append("edited order stays saved after a browser refresh")
+
     page.get_by_label("Repair status").select_option(label="Repairing")
     page.locator(".history-item strong").filter(has_text="Repairing").last.wait_for()
     assert page.locator(".detail-heading .status").inner_text() == "Repairing"
