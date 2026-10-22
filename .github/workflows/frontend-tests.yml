@@ -1,10 +1,20 @@
-name: Frontend checks
+name: FixFlow checks
 
 on:
   push:
     branches: [main]
+    paths:
+      - "frontend/**"
+      - "backend/**"
+      - "openapi.yaml"
+      - ".github/workflows/frontend-tests.yml"
   pull_request:
     branches: [main]
+    paths:
+      - "frontend/**"
+      - "backend/**"
+      - "openapi.yaml"
+      - ".github/workflows/frontend-tests.yml"
 
 jobs:
   test-frontend:
@@ -45,3 +55,18 @@ jobs:
           exit 1
       - name: Run browser smoke tests
         run: python frontend/tests/browser_smoke.py
+
+  test-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install backend dependencies
+        run: python -m pip install -r backend/requirements.txt
+      - name: Run backend and contract tests
+        working-directory: backend
+        run: python -m pytest -q
