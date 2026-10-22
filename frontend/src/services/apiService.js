@@ -1,8 +1,22 @@
-const API_BASE = "http://127.0.0.1:8000";
+function getApiBase() {
+  const host = window.location.hostname;
+  const codespaceMatch = host.match(/^(.*)-5173\\.app\\.github\\.dev$/);
+
+  if (codespaceMatch) {
+    // The frontend and backend use separate forwarded ports in GitHub Codespaces.
+    return window.location.protocol + "//" + codespaceMatch[1] + "-8000.app.github.dev";
+  }
+
+  // Local Mac/PC development.
+  return "http://127.0.0.1:8000";
+}
+
+const API_BASE = getApiBase();
 
 async function request(path, options = {}) {
   const response = await fetch(API_BASE + path, {
     ...options,
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
       ...(options.headers || {}),
