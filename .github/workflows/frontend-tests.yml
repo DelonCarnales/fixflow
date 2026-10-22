@@ -8,6 +8,7 @@ on:
       - "backend/**"
       - "openapi.yaml"
       - ".github/workflows/frontend-tests.yml"
+      - ".devcontainer/**"
   pull_request:
     branches: [main]
     paths:
@@ -35,6 +36,10 @@ jobs:
           python -m pip install -r frontend/requirements-test.txt
           python -m pip install -r backend/requirements.txt
           python -m playwright install --with-deps chromium
+      - name: Validate Codespaces configuration
+        run: |
+          python -c "import json; json.load(open('.devcontainer/devcontainer.json'))"
+          bash -n .devcontainer/start.sh
       - name: Check JavaScript syntax
         run: |
           node --check frontend/src/app.js
