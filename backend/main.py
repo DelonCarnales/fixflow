@@ -1,9 +1,11 @@
 from datetime import date, datetime
 from enum import Enum
+from pathlib import Path
 from typing import Optional
 
 from fastapi import Depends, FastAPI, HTTPException, Query, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field, field_validator
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
@@ -311,3 +313,9 @@ def get_public_order_status(order_id: str, db: Session = Depends(get_db)) -> dic
         "status": order.status,
         "message": PUBLIC_MESSAGES[order.status],
     }
+
+
+# Serve the web app from the API origin in Codespaces. This keeps browser API
+# calls same-origin and avoids cross-origin restrictions on forwarded ports.
+FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
+app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
