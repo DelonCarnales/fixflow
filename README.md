@@ -79,7 +79,7 @@ python -m pip install -r requirements.txt
 python -m pytest -q
 ```
 
-Browser smoke tests use Playwright. Start the backend and frontend in the local setup above, then run from the repository root:
+Browser smoke tests use Playwright and open the frontend served by FastAPI on port 8000. Start the backend from the local setup above first; the separate frontend server on port 5173 is not needed for this test. Then, from the repository root in another terminal, run:
 
 ```bash
 python -m pip install -r frontend/requirements-test.txt
