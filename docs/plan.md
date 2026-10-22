@@ -31,7 +31,7 @@ I wanted an idea that is more useful than a basic list app, but still possible t
 - [x] Simple spare-parts list
 - [x] Public order status lookup
 - [x] Backend API (currently using in-memory data)
-- [ ] SQLite storage through SQLAlchemy
+- [x] SQLite storage through SQLAlchemy
 - [x] Tests for the main features
 - [x] Manual/browser checks of the main flow
 
