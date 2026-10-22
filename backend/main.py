@@ -181,7 +181,7 @@ app = FastAPI(title="FixFlow API", version="1.0.0", description="A simple repair
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
-        allow_origin_regex=r"https://[a-z0-9-]+-5173\.app\.github\.dev",
+    allow_origin_regex=r"https://[a-z0-9-]+-5173\.app\.github\.dev",
     allow_credentials=True,
     allow_methods=["GET", "POST", "PATCH", "OPTIONS"],
     allow_headers=["*"],
