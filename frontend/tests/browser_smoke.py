@@ -19,7 +19,7 @@ with sync_playwright() as p:
         errors.append(f"{message.text} at {message.location}")
 
     page.on("console", collect_console_error)
-    page.goto("http://127.0.0.1:5173", wait_until="networkidle")
+    page.goto("http://127.0.0.1:8000", wait_until="networkidle")
 
     page.get_by_role("heading", name="Good afternoon").wait_for()
     assert page.get_by_text("Active orders", exact=True).is_visible()
@@ -129,8 +129,9 @@ with sync_playwright() as p:
 
     # A backend outage should show a readable message instead of breaking the page.
     error_page = browser.new_page(viewport={"width": 1280, "height": 900})
-    error_page.route("http://127.0.0.1:8000/**", lambda route: route.abort())
-    error_page.goto("http://127.0.0.1:5173", wait_until="networkidle")
+    error_page.route("http://127.0.0.1:8000/orders**", lambda route: route.abort())
+    error_page.route("http://127.0.0.1:8000/parts**", lambda route: route.abort())
+    error_page.goto("http://127.0.0.1:8000", wait_until="networkidle")
     error_page.get_by_text(re.compile("Could not connect to the backend")).wait_for(state="visible")
     checks.append("backend connection failure shows a readable message")
     error_page.close()
