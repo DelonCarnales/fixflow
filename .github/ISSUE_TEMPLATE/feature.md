@@ -14,3 +14,7 @@ assignees: ""
 - [ ]
 
 # Out of scope
+
+# Constraints
+- Follow `AGENTS.md`, `docs/spec.md`, and `docs/process.md`.
+- Keep the code simple and easy to test.
