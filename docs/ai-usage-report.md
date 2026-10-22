@@ -16,4 +16,4 @@ AI assistance was used to brainstorm the project idea, organize the specificatio
 AI-generated code and docs are drafts, not proof of correctness. I will run the app locally, check the main user flows, run the tests, and create a `user-test-bug` issue for any bug that I discover by using the running app. An issue should only be closed after QA checks its acceptance criteria.
 
 ## Current status
-Planning docs and the initial GitHub Issues have been added. The first frontend prototype is implemented and tested locally. The backend, OpenAPI contract, and database are not implemented yet.
+Planning docs and the initial GitHub Issues have been added. The first frontend prototype is implemented and browser-tested. The OpenAPI contract and FastAPI backend are implemented. SQLAlchemy and SQLite are now used for persistent backend storage; the frontend/backend connection is still pending.
