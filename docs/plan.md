@@ -21,19 +21,19 @@ I wanted an idea that is more useful than a basic list app, but still possible t
 7. **Testing:** run the app and test important flows; fix bugs and document them.
 
 ## MVP checklist
-- [ ] Dashboard with basic counts
-- [ ] Repair orders list
-- [ ] Search and status filter
-- [ ] Create and edit repair order
-- [ ] Repair details page
-- [ ] Change repair status
-- [ ] Customer and device details
-- [ ] Simple spare-parts list
-- [ ] Public order status lookup
-- [ ] Backend API
+- [x] Dashboard with basic counts
+- [x] Repair orders list
+- [x] Search and status filter
+- [x] Create and edit repair order
+- [x] Repair details page
+- [x] Change repair status
+- [x] Customer and device details
+- [x] Simple spare-parts list
+- [x] Public order status lookup
+- [x] Backend API (currently using in-memory data)
 - [ ] SQLite storage through SQLAlchemy
-- [ ] Tests for the main features
-- [ ] Manual browser test of the main flow
+- [x] Tests for the main features
+- [x] Manual/browser checks of the main flow
 
 ## Not in MVP
 - Online payments
