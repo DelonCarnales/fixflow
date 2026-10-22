@@ -38,6 +38,8 @@ jobs:
       - name: Check JavaScript syntax
         run: |
           node --check frontend/src/app.js
+          node --check frontend/src/services/service.js
+          node --check frontend/src/services/apiService.js
           node --check frontend/src/services/mockService.js
           node --check frontend/src/services/mockService.test.js
       - name: Run mock service tests
