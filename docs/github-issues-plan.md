@@ -39,10 +39,11 @@ GitHub Issues are the canonical backlog. This document is only a quick index; Gi
 - #30 Treat the expected unknown-order 404 as handled — closed (QA PASS)
 
 ## Latest verified checks
-GitHub Actions run #40 passed:
+GitHub Actions run #48 passed:
 - 8 frontend service tests
 - 14 browser smoke checks against the real frontend, FastAPI, and SQLite
-- 14 backend/API/OpenAPI tests
+- 15 backend/API/OpenAPI/CORS tests
+- Codespaces JSON configuration and startup script syntax checks
 
 ## Workflow
 Every issue should have Goal, Description, Acceptance criteria, Out of scope, and Constraints. PM grooms the scope. The engineer implements without closing it. QA checks acceptance criteria, runs tests, posts a PASS/FAIL comment, and closes only after PASS.
