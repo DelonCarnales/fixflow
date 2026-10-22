@@ -8,7 +8,7 @@ with sync_playwright() as p:
     browser = p.chromium.launch(headless=True)
     page = browser.new_page(viewport={"width": 1440, "height": 1000})
     page.on("pageerror", lambda error: errors.append(str(error)))
-    page.on("console", lambda message: errors.append(message.text) if message.type == "error" else None)
+    page.on("console", lambda message: errors.append(f"{message.text} at {message.location}") if message.type == "error" else None)
     page.goto("http://127.0.0.1:5173", wait_until="networkidle")
 
     page.get_by_role("heading", name="Good afternoon").wait_for()
