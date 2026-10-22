@@ -10,7 +10,8 @@ function getApiBase() {
   const codespaceMatch = host.match(/^(.*)-5173\.app\.github\.dev$/);
 
   if (codespaceMatch) {
-    // The frontend and backend use separate forwarded ports in GitHub Codespaces.
+    // Legacy compatibility for a Codespaces frontend opened on port 5173.
+    // The recommended Codespaces entry point is port 8000 (same-origin UI + API).
     return window.location.protocol + "//" + codespaceMatch[1] + "-8000.app.github.dev";
   }
 
