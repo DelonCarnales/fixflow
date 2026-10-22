@@ -18,44 +18,49 @@ This is a student project for a Web Frontend course. The goal is to build a work
 - Database: SQLite with SQLAlchemy ORM
 - Tests: Node's built-in test runner, Pytest, and Playwright browser checks
 
-## Run the app
+## Run locally on a Mac or PC
 
-Start the backend in one terminal:
+For local development, run the backend and frontend in separate terminals.
+
+Terminal 1 — backend:
 
 ```bash
 cd backend
+python3 -m venv .venv
+source .venv/bin/activate
 python -m pip install -r requirements.txt
 python -m uvicorn main:app --reload --port 8000
 ```
 
-Start the frontend in another terminal:
+Terminal 2 — frontend (from the repository root):
 
 ```bash
 cd frontend
 python3 -m http.server 5173
 ```
 
-Open http://localhost:5173. The normal mode uses the FastAPI backend. To work with sample data only, open http://localhost:5173/?mock=1.
+Open http://localhost:5173. In this local setup, the frontend calls the API at http://127.0.0.1:8000. To use sample data without the backend, open http://localhost:5173/?mock=1.
 
-The API docs are at http://127.0.0.1:8000/docs.
+The API docs are at http://127.0.0.1:8000/docs. The default SQLite database file is created in the backend folder.
 
-## Run it in GitHub without installing anything on your Mac
+## Run in GitHub Codespaces (no local installation)
 
-This repository is configured for GitHub Codespaces. Codespaces runs the app in a cloud development environment, so you only need a browser. In Codespaces, FastAPI also serves the frontend on port 8000 so browser requests to the API stay on the same origin and avoid forwarded-port CORS/authentication issues.
+Codespaces uses a different setup from local development: **FastAPI serves both the frontend and API on port 8000**, so the page and API share one origin. Port 5173 is not used by the Codespaces startup script.
 
 1. Open the repository on GitHub.
 2. Click the green **Code** button and select **Codespaces**.
 3. Click **Create codespace on main**.
-4. Wait for the setup to finish. The configured environment installs the Python test/API packages and Node.js, then starts the app.
-5. Open the forwarded **FixFlow App** port (8000). If it did not open automatically, find port 8000 in the **Ports** tab and choose **Open in Browser**. Use port 8000 for Codespaces; port 5173 is only for local development and CI tests.
+4. Wait for the environment setup to finish.
+5. Open the forwarded port labelled **FixFlow App** (8000). If it did not open automatically, use the **Ports** tab and choose **Open in Browser** for port 8000.
 
-If you pull updates to this repository and the old server is still running, open the Codespaces terminal and run:
+To update an existing Codespace and restart the app, run these commands in its terminal:
 
 ```bash
+git pull
 bash .devcontainer/start.sh
 ```
 
-Codespaces has monthly usage limits; use is subject to the quota for your GitHub account. The forwarded ports are private by default. Do not switch them to public when using real customer data. The app only contains fictional demo records.
+If Git reports local changes or a merge conflict, stop and review the message rather than resetting files. The Codespaces configuration forwards only port 8000. The port is private by default; do not make it public when using real customer data. This project uses fictional demo records.
 
 ## Run tests
 
@@ -74,7 +79,7 @@ python -m pip install -r requirements.txt
 python -m pytest -q
 ```
 
-Browser smoke tests need Playwright. Start the backend and frontend first, then run:
+Browser smoke tests use Playwright. Start the backend and frontend in the local setup above, then run from the repository root:
 
 ```bash
 python -m pip install -r frontend/requirements-test.txt
@@ -82,7 +87,7 @@ python -m playwright install chromium
 python frontend/tests/browser_smoke.py
 ```
 
-GitHub Actions runs JavaScript syntax checks, mock service tests, browser smoke tests against the SQLite-backed API, and backend tests when relevant files change.
+GitHub Actions checks JavaScript syntax, mock service tests, browser flows against FastAPI and SQLite, backend/OpenAPI tests, and the Codespaces startup configuration. See the [latest workflow run](https://github.com/DelonCarnales/fixflow/actions) for the actual result.
 
 ## Development stages
 1. Plan and write the docs.
@@ -94,4 +99,4 @@ GitHub Actions runs JavaScript syntax checks, mock service tests, browser smoke 
 7. Run the complete app and test the main flows.
 
 ## Current status
-Planning docs, the frontend, mock service, OpenAPI contract, and FastAPI backend with SQLite/SQLAlchemy are in the repository. The frontend now defaults to the real API and can still run in mock mode with `?mock=1`. Check the latest GitHub Actions run for the current full-flow test result.
+The repository contains project planning docs, the frontend, a mock service, an OpenAPI contract, and a FastAPI backend with SQLite/SQLAlchemy persistence. The frontend uses the real API by default and supports mock mode with `?mock=1`. Codespaces runs the interface and API together on port 8000; local development uses frontend port 5173 and backend port 8000.
